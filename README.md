@@ -32,5 +32,5 @@ https://www.kaggle.com/datasets/zubairamuti/netflix-movies-and-tv-shows-dataset
 https://www.kaggle.com/datasets/devanshiipatel/imdb-tv-shows?resource=download
 https://grouplens.org/datasets/movielens/25m/
 https://www.kaggle.com/datasets/shivamb/amazon-prime-movies-and-tv-shows
-https://www.kaggle.com/datasets/stefanoleone992/rotten-tomatoes-movies-and-critic-reviews-dataset
+   https://www.kaggle.com/datasets/stefanoleone992/rotten-tomatoes-movies-and-critic-reviews-dataset
 ```
