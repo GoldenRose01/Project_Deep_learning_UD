@@ -14,7 +14,6 @@ Per eseguire il progetto e replicare i nostri risultati:
 
    ```
    git clone https://github.com/GoldenRose01/Project_Deep_learning_UD
-   cd MoviePlotRecommender
    ```
 2. **Preparare l'ambiente:** Creare un ambiente virtuale e installare le dipendenze:
    **Bash**
@@ -24,13 +23,7 @@ Per eseguire il progetto e replicare i nostri risultati:
    source venv/bin/activate
    pip install -r requirements.txt
    ```
-3. Scaricare Dataset e inserirli
+   
+3. Run dello script
 
-```
-https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset
-https://www.kaggle.com/datasets/zubairamuti/netflix-movies-and-tv-shows-dataset
-https://www.kaggle.com/datasets/devanshiipatel/imdb-tv-shows?resource=download
-https://grouplens.org/datasets/movielens/25m/
-https://www.kaggle.com/datasets/shivamb/amazon-prime-movies-and-tv-shows
-   https://www.kaggle.com/datasets/stefanoleone992/rotten-tomatoes-movies-and-critic-reviews-dataset
-```
+```streamlit run app.py```
