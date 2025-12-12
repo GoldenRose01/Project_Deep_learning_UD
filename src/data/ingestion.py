@@ -6,8 +6,11 @@ import kagglehub
 
 class DataIngestor:
     def __init__(self):
-        # Percorso dove salveremo i dati processati
-        self.cache_path = os.path.join("cache", "movies_data.pkl")
+        # --- FIX: CREAZIONE AUTOMATICA CARTELLA CACHE ---
+        self.cache_dir = "cache"
+        os.makedirs(self.cache_dir, exist_ok=True)  # Crea la cartella se non esiste
+
+        self.cache_path = os.path.join(self.cache_dir, "movies_data.pkl")
 
         self.datasets = {
             'imdb_mov': "rounakbanik/the-movies-dataset",
@@ -17,7 +20,7 @@ class DataIngestor:
             'rt': "stefanoleone992/rotten-tomatoes-movies-and-critic-reviews-dataset",
             'disney': "shivamb/disney-movies-and-tv-shows",
             'hulu': "shivamb/hulu-movies-and-tv-shows",
-            'wiki': "jrobischon/wikipedia-movie-plots"  # <--- NUOVO MASSIVO
+            'wiki': "jrobischon/wikipedia-movie-plots"
         }
 
     def _find_csv(self, path, pattern):
@@ -38,17 +41,21 @@ class DataIngestor:
                 path = kagglehub.dataset_download(slug)
                 df = None
 
-                # --- LOGICA DI PARSING ESISTENTE ---
+                # Parsing dei vari dataset
                 if key == 'imdb_mov':
                     f = self._find_csv(path, "movies_metadata.csv")
                     df = pd.read_csv(f, low_memory=False)
                     df = df[['title', 'overview', 'genres', 'vote_average']].copy()
                     df['type'] = 'Movie';
                     df['source'] = 'IMDb Movie'
-                    df['genres'] = df['genres'].astype(str).apply(lambda x: "|".join(
-                        [y.split("'name': '")[1].split("'")[0] for y in x.split("},") if "'name': '" in y]))
+                    # Pulizia generi complessa per IMDb
+                    try:
+                        df['genres'] = df['genres'].astype(str).apply(lambda x: "|".join(
+                            [y.split("'name': '")[1].split("'")[0] for y in x.split("},") if "'name': '" in y]))
+                    except:
+                        df['genres'] = "Unknown"
 
-                elif key == 'wiki':  # --- NUOVO PARSING WIKIPEDIA ---
+                elif key == 'wiki':
                     f = self._find_csv(path, "wiki_movie_plots_deduped.csv")
                     df = pd.read_csv(f)
                     df = df.rename(columns={'Title': 'title', 'Plot': 'overview', 'Genre': 'genres'})
@@ -106,10 +113,12 @@ class DataIngestor:
                     df['vote_average'] = 0
 
                 if df is not None:
+                    # Normalizzazione Colonne
                     cols = ['title', 'overview', 'genres', 'type', 'source', 'vote_average']
                     available = [c for c in cols if c in df.columns]
-                    frames.append(df[available])
-                    print(f"✅ OK: {key}")
+                    df_subset = df[available]
+                    frames.append(df_subset)
+                    print(f"✅ OK: {key} ({len(df)} righe)")
 
             except Exception as e:
                 print(f"⚠️ Errore {key}: {e}")
@@ -117,15 +126,22 @@ class DataIngestor:
         print("🔗 Unione Dataset...")
         df_final = pd.concat(frames, ignore_index=True)
 
-        # Pulizia
-        df_final['overview'] = df_final['overview'].fillna("")
-        df_final = df_final[df_final['overview'].str.len() > 20]
+        # --- PULIZIA DATI (Previene errori futuri) ---
+        # 1. Rimuovi righe con Titolo o Trama mancanti (NaN)
+        df_final = df_final.dropna(subset=['title', 'overview'])
+        # 2. Converti in stringa per sicurezza
+        df_final['title'] = df_final['title'].astype(str)
+        df_final['overview'] = df_final['overview'].astype(str)
+        # 3. Rimuovi descrizioni troppo corte o vuote
+        df_final = df_final[df_final['overview'].str.len() > 10]
+        # 4. Rimuovi duplicati esatti
         df_final = df_final.drop_duplicates(subset=['title'])
+        # 5. Fix voti
         df_final['vote_average'] = pd.to_numeric(df_final['vote_average'], errors='coerce').fillna(0)
 
-        # 2. SALVATAGGIO CACHE
+        # SALVATAGGIO
         print(f"💾 SALVATAGGIO CACHE IN {self.cache_path}...")
         df_final.to_pickle(self.cache_path)
 
-        print(f"🎉 TOTALE: {len(df_final)} titoli.")
+        print(f"🎉 TOTALE: {len(df_final)} titoli puliti.")
         return df_final

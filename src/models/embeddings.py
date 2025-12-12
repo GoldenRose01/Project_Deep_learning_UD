@@ -11,8 +11,11 @@ class EmbeddingGenerator:
         self.vectorizer = None
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-        # Path cache vettori
-        self.cache_path = os.path.join("cache", f"embeddings_{method}.npy")
+        # --- FIX: CREAZIONE CARTELLA ---
+        self.cache_dir = "cache"
+        os.makedirs(self.cache_dir, exist_ok=True)
+
+        self.cache_path = os.path.join(self.cache_dir, f"embeddings_{method}.npy")
 
         print(f"🔄 Init AI ({method.upper()} on {self.device})")
 
@@ -23,18 +26,16 @@ class EmbeddingGenerator:
             self.vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
 
     def fit_transform(self, text_list):
-        # 1. CONTROLLO CACHE VETTORI
-        # Nota: dobbiamo essere sicuri che il numero di testi corrisponda a quello salvato.
-        # Per semplicità, qui ci fidiamo del file se esiste.
-        # Se cambi dataset, devi cancellare la cartella cache!
+        # 1. CONTROLLO CACHE
         if os.path.exists(self.cache_path):
             try:
                 data = np.load(self.cache_path)
+                # Verifica rudimentale della lunghezza
                 if len(data) == len(text_list):
                     print(f"⚡ EMBEDDINGS TROVATI: Carico da {self.cache_path}")
                     return data
                 else:
-                    print("⚠️ Cache dimension mismatch (Dati cambiati). Ricalcolo...")
+                    print(f"⚠️ Cache mismatch ({len(data)} vs {len(text_list)}). Ricalcolo...")
             except:
                 pass
 
@@ -53,7 +54,7 @@ class EmbeddingGenerator:
         elif self.method == 'tfidf':
             embeddings = self.vectorizer.fit_transform(text_list).toarray()
 
-        # 2. SALVATAGGIO SU DISCO
+        # 2. SALVATAGGIO
         if embeddings is not None:
             print(f"💾 Salvataggio Embeddings in {self.cache_path}...")
             np.save(self.cache_path, embeddings)
