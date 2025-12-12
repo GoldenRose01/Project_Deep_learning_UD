@@ -1,11 +1,9 @@
 import numpy as np
 import pickle
 import os
+import torch
+from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
-
-
-# Per installare le librerie necessarie, eseguite nel terminale:
-# pip install scikit-learn sentence-transformers numpy pandas
 
 class EmbeddingGenerator:
     """
@@ -25,7 +23,11 @@ class EmbeddingGenerator:
         """
         self.method = method
         self.model = None
-        self.vectorizer = None  # Solo per TF-IDF
+        self.vectorizer = None
+
+        # Rilevamento Hardware: Se hai una GPU Nvidia, la usiamo!
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        print(f"⚙️ Hardware rilevato per AI: {self.device.upper()}")
 
         print(f"🔄 Inizializzazione EmbeddingGenerator con metodo: {self.method.upper()}...")
 
@@ -61,7 +63,12 @@ class EmbeddingGenerator:
 
         if self.method == 'bert':
             # Sentence-BERT gestisce tutto internamente (progress bar inclusa)
-            embeddings = self.model.encode(text_list, show_progress_bar=True)
+            embeddings = self.model.encode(
+                text_list,
+                show_progress_bar=True,
+                batch_size=64,
+                convert_to_numpy=True
+            )
 
         elif self.method == 'tfidf':
             # TF-IDF deve prima imparare il vocabolario (fit) poi trasformare

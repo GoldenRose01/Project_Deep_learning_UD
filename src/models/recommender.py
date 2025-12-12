@@ -50,3 +50,35 @@ class MovieRecommender:
         results = temp_df.sort_values(by='score', ascending=False).head(top_n)
 
         return results, "OK"
+
+    def evaluate_system_quality(self, n_samples=50):
+        """
+        Esegue un test automatico su 50 film casuali.
+        Controlla se i film raccomandati condividono i generi con il film di input.
+        """
+        # Prendi 50 film a caso
+        samples = self.df.sample(n=min(n_samples, len(self.df)), random_state=42)
+
+        total_overlap_score = 0
+        total_recs = 0
+
+        for _, row in samples.iterrows():
+            input_genres = set(str(row['genres']).split('|'))
+
+            # Chiedi raccomandazioni
+            recs, _ = self.recommend(row['title'], top_n=5)
+
+            if recs is None or recs.empty: continue
+
+            # Calcola overlap
+            for _, rec_row in recs.iterrows():
+                rec_genres = set(str(rec_row['genres']).split('|'))
+                # Intersezione: quanti generi in comune?
+                common = input_genres.intersection(rec_genres)
+                if len(common) > 0:
+                    total_overlap_score += 1  # Un punto se c'è almeno un genere in comune
+                total_recs += 1
+
+        # Calcola percentuale finale
+        precision = total_overlap_score / total_recs if total_recs > 0 else 0
+        return precision

@@ -1,49 +1,62 @@
+import time
 from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report
-import pandas as pd
+from sklearn.metrics import accuracy_score
 
 
-class GenreClassifier:
+class ModelBenchmark:
     def __init__(self, embeddings, labels):
-        """
-        embeddings: Matrice X (Features da BERT)
-        labels: Lista y (Target: Genere, Tipo o Sorgente)
-        """
         self.X = embeddings
         self.y = labels
-        self.model = None
-        # Dividiamo i dati: 80% per addestrare, 20% per il test
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
             self.X, self.y, test_size=0.2, random_state=42
         )
 
-    def train(self, epochs=10, hidden_layers=(64, 32)):
-        """
-        Addestra una rete neurale (MLP).
-        epochs: corrisponde a max_iter in sklearn (numero di passaggi sui dati)
-        """
-        # Se l'utente mette poche epoche, usiamo quelle. Se ne mette tante, lasciamo lavorare.
-        print(f"🧠 Training Neural Network per {epochs} epoche...")
+    def run_benchmark(self):
+        """Confronta diverse architetture"""
+        models = [
+            {
+                "name": "Neural Net (Simple)",
+                "model": MLPClassifier(hidden_layer_sizes=(32,), max_iter=50)
+            },
+            {
+                "name": "Neural Net (Deep)",
+                "model": MLPClassifier(hidden_layer_sizes=(128, 64, 32), max_iter=50)
+            },
+            {
+                "name": "Decision Tree (Fast)",
+                "model": DecisionTreeClassifier(max_depth=10)
+            },
+            {
+                "name": "Random Forest (Robust)",
+                "model": RandomForestClassifier(n_estimators=50, max_depth=10)
+            }
+        ]
 
-        self.model = MLPClassifier(
-            hidden_layer_sizes=hidden_layers,
-            max_iter=epochs,  # Qui usiamo il numero scelto dallo slider!
-            activation='relu',
-            solver='adam',
-            random_state=42,
-            early_stopping=True  # Si ferma prima se smette di imparare
-        )
+        results = []
+        for entry in models:
+            name = entry["name"]
+            clf = entry["model"]
 
-        self.model.fit(self.X_train, self.y_train)
-        return self.model
+            print(f"Testing {name}...")
 
-    def evaluate(self):
-        """Restituisce l'accuratezza e il report dettagliato."""
-        if not self.model:
-            return 0, "Model not trained"
+            # Misura Tempo Training
+            start_time = time.time()
+            clf.fit(self.X_train, self.y_train)
+            train_time = time.time() - start_time
 
-        preds = self.model.predict(self.X_test)
-        acc = accuracy_score(self.y_test, preds)
-        # Output dict=True serve per trasformarlo in tabella su Streamlit
-        return acc, classification_report(self.y_test, preds, output_dict=True, zero_division=0)
+            # Misura Accuratezza
+            preds = clf.predict(self.X_test)
+            acc = accuracy_score(self.y_test, preds)
+
+            results.append({
+                "Modello": name,
+                "Accuratezza": round(acc, 4),
+                "Tempo Training (sec)": round(train_time, 4),
+                "Efficienza (Acc/Time)": round(acc / (train_time + 0.001), 2)
+            })
+
+        return results

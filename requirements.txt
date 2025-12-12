@@ -1,0 +1,11 @@
+streamlit
+pandas
+numpy
+scikit-learn
+sentence-transformers
+kagglehub
+cinemagoer
+wikipedia-api
+deep-translator
+torch
+matplotlib
