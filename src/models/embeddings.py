@@ -9,15 +9,20 @@ class EmbeddingGenerator:
         self.method = method
         self.model = None
         self.vectorizer = None
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-        # --- FIX: CREAZIONE CARTELLA ---
+        # LOGICA GPU AVANZATA
+        if torch.cuda.is_available():
+            self.device = 'cuda'
+            gpu_name = torch.cuda.get_device_name(0)
+            print(f"🚀 GPU RILEVATA: {gpu_name} (Modalità Turbo Attiva)")
+        else:
+            self.device = 'cpu'
+            print("⚠️ GPU NON RILEVATA: Uso CPU (Più lento)")
+
+        # Creazione cartella Cache
         self.cache_dir = "cache"
         os.makedirs(self.cache_dir, exist_ok=True)
-
         self.cache_path = os.path.join(self.cache_dir, f"embeddings_{method}.npy")
-
-        print(f"🔄 Init AI ({method.upper()} on {self.device})")
 
         if self.method == 'bert':
             from sentence_transformers import SentenceTransformer
@@ -30,24 +35,22 @@ class EmbeddingGenerator:
         if os.path.exists(self.cache_path):
             try:
                 data = np.load(self.cache_path)
-                # Verifica rudimentale della lunghezza
                 if len(data) == len(text_list):
-                    print(f"⚡ EMBEDDINGS TROVATI: Carico da {self.cache_path}")
+                    print(f"⚡ EMBEDDINGS CACHED: {self.cache_path}")
                     return data
-                else:
-                    print(f"⚠️ Cache mismatch ({len(data)} vs {len(text_list)}). Ricalcolo...")
             except:
                 pass
 
         if not text_list: return None
-        print(f"🚀 GENERAZIONE NUOVI VETTORI ({len(text_list)} items)...")
+        print(f"🔥 INIZIO CALCOLO SU {self.device.upper()} ({len(text_list)} film)...")
 
         embeddings = None
         if self.method == 'bert':
+            # Batch size più alto per la tua RTX (sfrutta la VRAM)
             embeddings = self.model.encode(
                 text_list,
                 show_progress_bar=True,
-                batch_size=64,
+                batch_size=128,  # Aumentato per la tua GPU
                 convert_to_numpy=True
             )
 
@@ -56,7 +59,6 @@ class EmbeddingGenerator:
 
         # 2. SALVATAGGIO
         if embeddings is not None:
-            print(f"💾 Salvataggio Embeddings in {self.cache_path}...")
             np.save(self.cache_path, embeddings)
 
         return embeddings
