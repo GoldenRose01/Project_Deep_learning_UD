@@ -1,6 +1,7 @@
 import streamlit as st
 from src.data.ingestion import DataIngestor
 from src.nlp.bert_handler import BertHandler
+from src.models.embeddings import EmbeddingGenerator  # Usiamo la classe aggiornata sopra
 from src.algorithms.content_based import ContentBasedRecommender
 from src.services.web_search import WebSearchService
 from src.services.translation import TranslationService
@@ -11,13 +12,16 @@ st.set_page_config(layout="wide", page_title="Movie AI Pro")
 
 @st.cache_resource
 def init_backend():
-    # 1. Dati
+    # 1. Dati (Carica da Cache se esiste)
     df = DataIngestor().load_all()
 
-    # 2. NLP (GPU)
-    # df = df.head(10000) # Decommenta per test veloci
+    # 2. NLP (Carica da Cache se esiste)
     texts = (df['title'].astype(str) + ". " + df['overview'].astype(str)).tolist()
-    embeddings = BertHandler().encode(texts)
+
+    # Qui usiamo la classe EmbeddingGenerator che abbiamo appena modificato
+    # (Sostituisce BertHandler diretto per gestire il caching)
+    embedder = EmbeddingGenerator(method='bert')
+    embeddings = embedder.fit_transform(texts)
 
     # 3. Core
     recsys = ContentBasedRecommender(df, embeddings)
@@ -27,7 +31,7 @@ def init_backend():
     return df, recsys, web, trans, embeddings
 
 
-with st.spinner("Avvio Sistema..."):
+with st.spinner("Avvio Sistema (Controllo Cache)..."):
     df, recsys, web, trans, embeddings = init_backend()
 
 render_main_page(df, recsys, web, trans, embeddings)
