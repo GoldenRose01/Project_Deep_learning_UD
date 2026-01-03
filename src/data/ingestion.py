@@ -6,9 +6,13 @@ import kagglehub
 
 class DataIngestor:
     def __init__(self):
-        # --- FIX: CREAZIONE AUTOMATICA CARTELLA CACHE ---
+        # Cartelle
         self.cache_dir = "cache"
-        os.makedirs(self.cache_dir, exist_ok=True)  # Crea la cartella se non esiste
+        self.custom_dir = "custom_datasets"  # Nuova cartella sorgente
+
+        # Creazione automatica
+        os.makedirs(self.cache_dir, exist_ok=True)
+        os.makedirs(self.custom_dir, exist_ok=True)
 
         self.cache_path = os.path.join(self.cache_dir, "movies_data.pkl")
 
@@ -27,6 +31,46 @@ class DataIngestor:
         files = glob.glob(os.path.join(path, "**", pattern), recursive=True)
         return files[0] if files else None
 
+    def load_custom_data(self):
+        """Carica tutti i CSV presenti nella cartella custom_datasets"""
+        custom_frames = []
+        if not os.path.exists(self.custom_dir): return []
+
+        # Cerca tutti i file .csv
+        csv_files = glob.glob(os.path.join(self.custom_dir, "*.csv"))
+
+        for f in csv_files:
+            try:
+                print(f"📂 Trovato Dataset Custom: {f}")
+                df = pd.read_csv(f)
+
+                # Ci aspettiamo che il file sia già stato normalizzato dalla UI (title, overview, etc.)
+                # Se mancano colonne essenziali, le saltiamo o riempiamo
+                if 'title' not in df.columns:
+                    print(f"⚠️ {f} ignorato: Manca colonna 'title'")
+                    continue
+
+                if 'overview' not in df.columns: df['overview'] = ''
+                if 'genres' not in df.columns: df['genres'] = 'Custom'
+                if 'vote_average' not in df.columns: df['vote_average'] = 0
+
+                df['source'] = f"Custom ({os.path.basename(f)})"
+                df['type'] = 'Custom'
+
+                # Seleziona solo colonne utili
+                cols = ['title', 'overview', 'genres', 'type', 'source', 'vote_average']
+                # Aggiungi colonne mancanti vuote per compatibilità
+                for c in cols:
+                    if c not in df.columns: df[c] = None
+
+                custom_frames.append(df[cols])
+                print(f"✅ Caricato Custom: {len(df)} righe")
+
+            except Exception as e:
+                print(f"❌ Errore caricamento {f}: {e}")
+
+        return custom_frames
+
     def load_all(self):
         # 1. CONTROLLO CACHE
         if os.path.exists(self.cache_path):
@@ -36,19 +80,18 @@ class DataIngestor:
         print("⬇️ NESSUNA CACHE. SCARICAMENTO DATASETS...")
         frames = []
 
+        # A. Caricamento Dataset Kaggle (Standard)
         for key, slug in self.datasets.items():
             try:
                 path = kagglehub.dataset_download(slug)
                 df = None
 
-                # Parsing dei vari dataset
                 if key == 'imdb_mov':
                     f = self._find_csv(path, "movies_metadata.csv")
                     df = pd.read_csv(f, low_memory=False)
                     df = df[['title', 'overview', 'genres', 'vote_average']].copy()
                     df['type'] = 'Movie';
                     df['source'] = 'IMDb Movie'
-                    # Pulizia generi complessa per IMDb
                     try:
                         df['genres'] = df['genres'].astype(str).apply(lambda x: "|".join(
                             [y.split("'name': '")[1].split("'")[0] for y in x.split("},") if "'name': '" in y]))
@@ -113,35 +156,31 @@ class DataIngestor:
                     df['vote_average'] = 0
 
                 if df is not None:
-                    # Normalizzazione Colonne
                     cols = ['title', 'overview', 'genres', 'type', 'source', 'vote_average']
                     available = [c for c in cols if c in df.columns]
-                    df_subset = df[available]
-                    frames.append(df_subset)
+                    frames.append(df[available])
                     print(f"✅ OK: {key} ({len(df)} righe)")
 
             except Exception as e:
                 print(f"⚠️ Errore {key}: {e}")
 
+        # B. Caricamento Dataset Custom (Utente)
+        custom_frames = self.load_custom_data()
+        frames.extend(custom_frames)
+
         print("🔗 Unione Dataset...")
         df_final = pd.concat(frames, ignore_index=True)
 
-        # --- PULIZIA DATI (Previene errori futuri) ---
-        # 1. Rimuovi righe con Titolo o Trama mancanti (NaN)
+        # Pulizia Finale
         df_final = df_final.dropna(subset=['title', 'overview'])
-        # 2. Converti in stringa per sicurezza
         df_final['title'] = df_final['title'].astype(str)
         df_final['overview'] = df_final['overview'].astype(str)
-        # 3. Rimuovi descrizioni troppo corte o vuote
         df_final = df_final[df_final['overview'].str.len() > 10]
-        # 4. Rimuovi duplicati esatti
         df_final = df_final.drop_duplicates(subset=['title'])
-        # 5. Fix voti
         df_final['vote_average'] = pd.to_numeric(df_final['vote_average'], errors='coerce').fillna(0)
 
-        # SALVATAGGIO
         print(f"💾 SALVATAGGIO CACHE IN {self.cache_path}...")
         df_final.to_pickle(self.cache_path)
 
-        print(f"🎉 TOTALE: {len(df_final)} titoli puliti.")
+        print(f"🎉 TOTALE: {len(df_final)} titoli.")
         return df_final

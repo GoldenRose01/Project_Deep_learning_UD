@@ -1,4 +1,7 @@
 import streamlit as st
+import pandas as pd
+import os
+import shutil
 from src.ui.components import render_movie_card
 from src.ml.benchmark import BenchmarkRunner
 
@@ -6,114 +9,130 @@ from src.ml.benchmark import BenchmarkRunner
 def render_main_page(df, recsys, web_search, translator, embeddings):
     st.title("🚀 AI Movie System Enterprise")
 
-    # Prepara la lista completa dei titoli per l'autocomplete
-    # (È veloce perché è solo una lista di stringhe in memoria)
     all_titles = sorted(df['title'].unique().tolist())
-
-    # Sidebar
     lang = st.sidebar.selectbox("Lingua / Language", ["en", "it", "es"])
 
-    # Tabs riorganizzate
-    t1, t2, t3, t4 = st.tabs(["🔎 Ricerca Rapida", "👤 Profilo Misto (Max 10)", "🧠 Lab AI", "📊 Stats"])
+    # 5 Tab
+    t1, t2, t3, t4, t5 = st.tabs(["🔎 Ricerca", "👤 Profilo", "🧠 Lab AI", "📊 Stats", "💾 Dataset Custom"])
 
-    # --- TAB 1: RICERCA SINGOLA (AUTOCOMPLETE) ---
+    # --- TAB 1: RICERCA ---
     with t1:
         st.subheader("Trova un film specifico")
-        st.caption("Scrivi parte del titolo e seleziona quello corretto dalla lista.")
+        selected_titles = st.multiselect("Cerca nel Database:", options=all_titles, max_selections=1,
+                                         placeholder="Es. Matrix...")
 
-        # 1. AUTOCOMPLETE LOCALE
-        # Usiamo multiselect limitato a 1 per avere l'effetto "cerca e seleziona" con cancellazione facile
-        selected_titles = st.multiselect(
-            "Cerca nel Database:",
-            options=all_titles,
-            max_selections=1,
-            placeholder="Es. Matrix, Avatar, Godfather..."
-        )
-
-        # Se l'utente ha selezionato qualcosa dal menu a tendina
         if selected_titles:
             target = selected_titles[0]
             st.success(f"Analisi per: **{target}**")
-
-            # Raccomandazione Immediata
             recs = recsys.recommend_single(target)
             if recs is not None:
-                st.markdown("### 🎬 Film Simili")
                 for _, row in recs.iterrows():
                     render_movie_card(row, translator, lang)
 
-        # 2. FALLBACK ONLINE (Se non trova nel menu a tendina)
         st.markdown("---")
-        with st.expander("Non trovi il film nella lista sopra? Cerca Online"):
-            st.warning("Usa questo solo se il film non appare nell'autocomplete sopra.")
-            col_web_1, col_web_2 = st.columns([3, 1])
-            with col_web_1:
-                web_query = st.text_input("Scrivi titolo per ricerca Web", key="web_q")
-            with col_web_2:
-                btn_web = st.button("Cerca Web")
-
-            if btn_web and web_query:
-                # Risoluzione titolo e scaricamento
+        with st.expander("Non trovi il film? Cerca Online"):
+            web_query = st.text_input("Scrivi titolo per ricerca Web", key="web_q")
+            if st.button("Cerca Web") and web_query:
                 with st.spinner(f"Cerco '{web_query}' su IMDb..."):
                     resolved = web_search.resolve_title(web_query)
-
                     if resolved and resolved in all_titles:
-                        st.success(f"Trovato! Il titolo corretto è **{resolved}** (è presente nel DB locale).")
-                        st.info("Per favore selezionalo dal menu in alto per vedere i simili.")
+                        st.success(f"Trovato nel DB: **{resolved}**! Selezionalo sopra.")
                     else:
-                        # Scarica dati
                         data = web_search.fetch_full_data(resolved if resolved else web_query)
                         if data:
-                            st.markdown("### Risultato Web")
                             render_movie_card(data, translator, lang)
                         else:
-                            st.error("Nessun risultato trovato.")
+                            st.error("Nessun risultato.")
 
-    # --- TAB 2: PROFILO MULTIPLO ---
+    # --- TAB 2: PROFILO ---
     with t2:
-        st.subheader("Costruisci il tuo Profilo")
-        st.write("Seleziona da 2 a 10 film per creare un mix dei tuoi gusti.")
+        st.subheader("Profilo Misto")
+        profile_movies = st.multiselect("I tuoi preferiti:", options=all_titles, max_selections=10)
+        if st.button("Genera Mix") and profile_movies:
+            with st.spinner("Calcolo media vettoriale..."):
+                recs_profile = recsys.recommend_profile(profile_movies)
+            if recs_profile is not None:
+                st.balloons()
+                for _, row in recs_profile.iterrows():
+                    render_movie_card(row, translator, lang)
 
-        # SELETTORE MULTIPLO
-        profile_movies = st.multiselect(
-            "I tuoi film preferiti:",
-            options=all_titles,
-            max_selections=10,
-            placeholder="Aggiungi film alla lista..."
-        )
-
-        col_btn, col_info = st.columns([1, 4])
-        with col_btn:
-            btn_profile = st.button("✨ Genera Mix", type="primary")
-
-        if btn_profile:
-            if not profile_movies:
-                st.error("Seleziona almeno un film!")
-            else:
-                with st.spinner(f"Sto calcolando la media vettoriale di {len(profile_movies)} film..."):
-                    # Chiama la funzione per il profilo
-                    recs_profile = recsys.recommend_profile(profile_movies, top_n=10)
-
-                if recs_profile is not None:
-                    st.balloons()
-                    st.success("Ecco i film che si trovano nell'intersezione dei tuoi gusti:")
-                    for _, row in recs_profile.iterrows():
-                        render_movie_card(row, translator, lang)
-                else:
-                    st.error("Impossibile generare consigli. Riprova con titoli diversi.")
-
-    # --- TAB 3: BENCHMARK ---
+    # --- TAB 3: AI LAB ---
     with t3:
-        st.header("Benchmark Modelli")
-        if st.button("Avvia Gara Neural Networks"):
+        if st.button("Avvia Benchmark"):
             y = df['source']
             valid_sources = y.value_counts()[y.value_counts() > 50].index
             mask = y.isin(valid_sources)
             runner = BenchmarkRunner(embeddings[mask], y[mask])
             st.dataframe(runner.run())
 
-    # --- TAB 4: STATISTICHE ---
+    # --- TAB 4: STATS ---
     with t4:
-        st.metric("Film Totali nel DB", len(df))
-        st.markdown("### Distribuzione Sorgenti")
+        st.metric("Film Totali", len(df))
         st.bar_chart(df['source'].value_counts())
+
+    # --- TAB 5: DATASET CUSTOM (NUOVO) ---
+    with t5:
+        st.header("Importa i tuoi Dati")
+        st.info("Carica un file CSV. Il sistema lo integrerà nel database per la ricerca e l'AI.")
+
+        uploaded_file = st.file_uploader("Carica CSV", type=['csv'])
+
+        if uploaded_file:
+            try:
+                # Anteprima
+                preview_df = pd.read_csv(uploaded_file)
+                st.write("Anteprima dati:", preview_df.head(3))
+
+                st.subheader("Mappatura Colonne")
+                cols = preview_df.columns.tolist()
+
+                c1, c2, c3 = st.columns(3)
+                col_title = c1.selectbox("Colonna Titolo", cols, index=0)
+                col_plot = c2.selectbox("Colonna Trama/Descrizione", cols, index=1 if len(cols) > 1 else 0)
+                col_genre = c3.selectbox("Colonna Genere (Opzionale)", ["Nessuna"] + cols)
+
+                if st.button("💾 Salva e Integra nel Sistema", type="primary"):
+                    # Normalizzazione
+                    clean_df = pd.DataFrame()
+                    clean_df['title'] = preview_df[col_title]
+                    clean_df['overview'] = preview_df[col_plot]
+
+                    if col_genre != "Nessuna":
+                        clean_df['genres'] = preview_df[col_genre]
+                    else:
+                        clean_df['genres'] = "Custom"
+
+                    clean_df['vote_average'] = 0
+
+                    # Salvataggio
+                    save_path = os.path.join("custom_datasets", uploaded_file.name)
+                    clean_df.to_csv(save_path, index=False)
+
+                    st.success(f"Salvato in {save_path}!")
+
+                    # PULIZIA CACHE PER FORZARE RICARICAMENTO
+                    if os.path.exists("cache/movies_data.pkl"):
+                        os.remove("cache/movies_data.pkl")
+
+                    # Pulsante magico per riavviare
+                    st.warning("⚠️ Cache pulita. Ricarica la pagina (F5) o clicca Rerun per processare i nuovi dati.")
+                    if st.button("Riavvia Sistema Ora"):
+                        st.rerun()
+
+            except Exception as e:
+                st.error(f"Errore lettura CSV: {e}")
+
+        # Mostra file già caricati
+        st.markdown("---")
+        st.subheader("File Custom Attivi")
+        if os.path.exists("custom_datasets"):
+            files = os.listdir("custom_datasets")
+            if files:
+                for f in files:
+                    st.text(f"📄 {f}")
+                    if st.button(f"🗑️ Elimina {f}"):
+                        os.remove(os.path.join("custom_datasets", f))
+                        os.remove("cache/movies_data.pkl")
+                        st.rerun()
+            else:
+                st.caption("Nessun file custom caricato.")

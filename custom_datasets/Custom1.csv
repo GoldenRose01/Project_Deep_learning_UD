@@ -1,0 +1,228 @@
+title,overview,genres,vote_average
+The Matrix,1999,Action|Sci-Fi,0
+Inception,2010,Action|Adventure|Sci-Fi,0
+Interstellar,2014,Adventure|Drama|Sci-Fi,0
+Parasite,2019,Drama|Thriller,0
+Joker,2019,Crime|Drama|Thriller,0
+Oppenheimer,2023,Biography|Drama|History,0
+Barbie,2023,Adventure|Comedy|Fantasy,0
+Dune: Part One,2021,Action|Adventure|Sci-Fi,0
+Dune: Part Two,2024,Action|Adventure|Sci-Fi,0
+Avengers: Endgame,2019,Action|Adventure|Sci-Fi,0
+Spider-Man: No Way Home,2021,Action|Adventure|Fantasy,0
+The Wolf of Wall Street,2013,Biography|Comedy|Crime,0
+Game of Thrones,2011,Action|Adventure|Drama,0
+Breaking Bad,2008,Crime|Drama|Thriller,0
+Chernobyl,2019,Drama|History|Thriller,0
+The Sopranos,1999,Crime|Drama,0
+Better Call Saul,2015,Crime|Drama,0
+Sherlock,2010,Crime|Drama|Mystery,0
+Peaky Blinders,2013,Crime|Drama,0
+Black Mirror,2011,Drama|Sci-Fi|Thriller,0
+Rick and Morty,2013,Animation|Adventure|Comedy,0
+True Detective,2014,Crime|Drama|Mystery,0
+The Office,2005,Comedy,0
+Friends,1994,Comedy|Romance,0
+Stranger Things,2016,Drama|Fantasy|Horror,0
+The Crown,2016,Biography|Drama|History,0
+Squid Game,2021,Action|Drama|Mystery,0
+The Queen's Gambit,2020,Drama,0
+Dark,2017,Crime|Drama|Mystery,0
+Mindhunter,2017,Crime|Drama|Thriller,0
+Arcane,2021,Animation|Action|Adventure,0
+BoJack Horseman,2014,Animation|Comedy|Drama,0
+The Irishman,2019,Biography|Crime|Drama,0
+Roma,2018,Drama,0
+Marriage Story,2019,Drama|Romance,0
+Glass Onion: A Knives Out Mystery,2022,Comedy|Crime|Drama,0
+All Quiet on the Western Front,2022,Action|Drama|War,0
+The Boys,2019,Action|Comedy|Crime,0
+Fallout,2024,Action|Adventure|Drama,0
+Fleabag,2016,Comedy|Drama,0
+The Marvelous Mrs. Maisel,2017,Comedy|Drama,0
+Invincible,2021,Animation|Action|Adventure,0
+Reacher,2022,Action|Crime|Drama,0
+Good Omens,2019,Comedy|Fantasy,0
+The Grand Tour,2016,Comedy|Talk-Show,0
+Manchester by the Sea,2016,Drama,0
+Sound of Metal,2019,Drama|Music,0
+Air,2023,Drama|Sport,0
+Thirteen Lives,2022,Action|Adventure|Biography,0
+The Mandalorian,2019,Action|Adventure|Fantasy,0
+Loki,2021,Action|Adventure|Fantasy,0
+Andor,2022,Action|Adventure|Drama,0
+WandaVision,2021,Action|Comedy|Drama,0
+Hamilton,2020,Biography|Drama|History,0
+Soul,2020,Animation|Adventure|Comedy,0
+Encanto,2021,Animation|Comedy|Family,0
+The Bear,2022,Comedy|Drama,0
+Shogun,2024,Adventure|Drama|History,0
+Only Murders in the Building,2021,Comedy|Crime|Drama,0
+The Handmaid's Tale,2017,Drama|Sci-Fi|Thriller,0
+The Last of Us,2023,Action|Adventure|Drama,0
+Succession,2018,Drama,0
+House of the Dragon,2022,Action|Adventure|Drama,0
+Euphoria,2019,Drama,0
+The White Lotus,2021,Comedy|Drama,0
+Ted Lasso,2020,Comedy|Drama|Sport,0
+Severance,2022,Drama|Mystery|Sci-Fi,0
+Silo,2023,Drama|Sci-Fi|Thriller,0
+Everything Everywhere All At Once,2022,Action|Adventure|Comedy,0
+The Whale,2022,Drama,0
+The Batman,2022,Action|Crime|Drama,0
+Top Gun: Maverick,2022,Action|Drama,0
+Poor Things,2023,Comedy|Drama|Romance,0
+Killers of the Flower Moon,2023,Crime|Drama|History,0
+Attack on Titan,2013,Animation|Action|Adventure,0
+Death Note,2006,Animation|Crime|Drama,0
+One Punch Man,2015,Animation|Action|Comedy,0
+Demon Slayer: Kimetsu no Yaiba,2019,Animation|Action|Adventure,0
+Spirited Away,2001,Animation|Adventure|Family,0
+Your Name,2016,Animation|Drama|Fantasy,0
+Cyberpunk: Edgerunners,2022,Animation|Action|Adventure,0
+John Wick,2014,Action|Crime|Thriller,0
+John Wick: Chapter 4,2023,Action|Crime|Thriller,0
+Mad Max: Fury Road,2015,Action|Adventure|Sci-Fi,0
+Blade Runner 2049,2017,Action|Drama|Sci-Fi,0
+Arrival,2016,Drama|Sci-Fi,0
+Ex Machina,2014,Drama|Sci-Fi|Thriller,0
+The Expanse,2015,Drama|Sci-Fi,0
+Westworld,2016,Drama|Sci-Fi|Western,0
+Daredevil,2015,Action|Crime|Drama,0
+The Punisher,2017,Action|Crime|Drama,0
+Get Out,2017,Horror|Mystery|Thriller,0
+Hereditary,2018,Drama|Horror|Mystery,0
+A Quiet Place,2018,Drama|Horror|Sci-Fi,0
+It,2017,Horror,0
+The Conjuring,2013,Horror|Mystery|Thriller,0
+Knives Out,2019,Comedy|Crime|Drama,0
+Whiplash,2014,Drama|Music,0
+La La Land,2016,Comedy|Drama|Music,0
+The Grand Budapest Hotel,2014,Adventure|Comedy|Crime,0
+The Godfather,1972,Crime|Drama,0
+The Godfather Part II,1974,Crime|Drama,0
+The Shawshank Redemption,1994,Drama,0
+Schindler's List,1993,Biography|Drama|History,0
+Pulp Fiction,1994,Crime|Drama,0
+The Lord of the Rings: The Fellowship of the Ring,2001,Action|Adventure|Drama,0
+The Lord of the Rings: The Two Towers,2002,Action|Adventure|Drama,0
+The Lord of the Rings: The Return of the King,2003,Action|Adventure|Drama,0
+The Dark Knight,2008,Action|Crime|Drama,0
+Fight Club,1999,Drama,0
+Forrest Gump,1994,Drama|Romance,0
+Star Wars: Episode IV - A New Hope,1977,Action|Adventure|Fantasy,0
+Star Wars: Episode V - The Empire Strikes Back,1980,Action|Adventure|Fantasy,0
+Goodfellas,1990,Biography|Crime|Drama,0
+Se7en,1995,Crime|Drama|Mystery,0
+The Silence of the Lambs,1991,Crime|Drama|Thriller,0
+Gladiator,2000,Action|Adventure|Drama,0
+Saving Private Ryan,1998,Drama|War,0
+The Green Mile,1999,Crime|Drama|Fantasy,0
+Titanic,1997,Drama|Romance,0
+Avatar,2009,Action|Adventure|Fantasy,0
+Back to the Future,1985,Adventure|Comedy|Sci-Fi,0
+Jurassic Park,1993,Action|Adventure|Sci-Fi,0
+The Lion King,1994,Animation|Adventure|Drama,0
+Terminator 2: Judgment Day,1991,Action|Sci-Fi,0
+Alien,1979,Horror|Sci-Fi,0
+Harry Potter and the Sorcerer's Stone,2001,Adventure|Family|Fantasy,0
+Harry Potter and the Chamber of Secrets,2002,Adventure|Family|Fantasy,0
+Harry Potter and the Prisoner of Azkaban,2004,Adventure|Family|Fantasy,0
+Harry Potter and the Goblet of Fire,2005,Adventure|Family|Fantasy,0
+Harry Potter and the Order of the Phoenix,2007,Adventure|Family|Fantasy,0
+Harry Potter and the Half-Blood Prince,2009,Adventure|Family|Fantasy,0
+Harry Potter and the Deathly Hallows: Part 1,2010,Adventure|Family|Fantasy,0
+Harry Potter and the Deathly Hallows: Part 2,2011,Adventure|Family|Fantasy,0
+Pirates of the Caribbean: The Curse of the Black Pearl,2003,Action|Adventure|Fantasy,0
+Pirates of the Caribbean: Dead Man's Chest,2006,Action|Adventure|Fantasy,0
+Iron Man,2008,Action|Adventure|Sci-Fi,0
+The Avengers,2012,Action|Adventure|Sci-Fi,0
+Guardians of the Galaxy,2014,Action|Adventure|Comedy,0
+Captain America: The Winter Soldier,2014,Action|Adventure|Sci-Fi,0
+Thor: Ragnarok,2017,Action|Adventure|Comedy,0
+Black Panther,2018,Action|Adventure|Sci-Fi,0
+The Hunger Games,2012,Action|Adventure|Sci-Fi,0
+The Hunger Games: Catching Fire,2013,Action|Adventure|Sci-Fi,0
+Mission: Impossible - Fallout,2018,Action|Adventure|Thriller,0
+Indiana Jones and the Raiders of the Lost Ark,1981,Action|Adventure,0
+Indiana Jones and the Last Crusade,1989,Action|Adventure,0
+Star Wars: Episode III - Revenge of the Sith,2005,Action|Adventure|Fantasy,0
+Fast Five,2011,Action|Crime|Thriller,0
+Furious 7,2015,Action|Crime|Thriller,0
+Life Is Beautiful,1997,Comedy|Drama|Romance,0
+Cinema Paradiso,1988,Drama|Romance,0
+The Great Beauty,2013,Drama,0
+Gomorrah,2014,Crime|Drama|Thriller,0
+My Brilliant Friend,2018,Drama,0
+Call Me by Your Name,2017,Drama|Romance,0
+Perfetti Sconosciuti,2016,Comedy|Drama,0
+The Hangover,2009,Comedy,0
+Superbad,2007,Comedy,0
+Mean Girls,2004,Comedy,0
+The Truman Show,1998,Comedy|Drama,0
+Groundhog Day,1993,Comedy|Drama|Fantasy,0
+Notting Hill,1999,Comedy|Drama|Romance,0
+Pretty Woman,1990,Comedy|Romance,0
+The Notebook,2004,Drama|Romance,0
+Pride & Prejudice,2005,Drama|Romance,0
+About Time,2013,Comedy|Drama|Fantasy,0
+Love Actually,2003,Comedy|Drama|Romance,0
+Amélie,2001,Comedy|Romance,0
+Eternal Sunshine of the Spotless Mind,2004,Drama|Romance|Sci-Fi,0
+Her,2013,Drama|Romance|Sci-Fi,0
+10 Things I Hate About You,1999,Comedy|Drama|Romance,0
+Crazy Stupid Love.,2011,Comedy|Drama|Romance,0
+Paddington 2,2017,Adventure|Comedy|Family,0
+Spider-Man: Into the Spider-Verse,2018,Animation|Action|Adventure,0
+Spider-Man: Across the Spider-Verse,2023,Animation|Action|Adventure,0
+Toy Story,1995,Animation|Adventure|Comedy,0
+Finding Nemo,2003,Animation|Adventure|Comedy,0
+The Incredibles,2004,Animation|Action|Adventure,0
+Shrek,2001,Animation|Adventure|Comedy,0
+How to Train Your Dragon,2010,Animation|Action|Adventure,0
+Inside Out,2015,Animation|Adventure|Comedy,0
+Coco,2017,Animation|Adventure|Family,0
+The Shining,1980,Drama|Horror,0
+The Exorcist,1973,Horror,0
+Psycho,1960,Horror|Mystery|Thriller,0
+The Thing,1982,Horror|Mystery|Sci-Fi,0
+Die Hard,1988,Action|Thriller,0
+Ghostbusters,1984,Action|Comedy|Fantasy,0
+E.T. the Extra-Terrestrial,1982,Adventure|Family|Sci-Fi,0
+Stand by Me,1986,Adventure|Drama,0
+The Breakfast Club,1985,Comedy|Drama,0
+Dead Poets Society,1989,Comedy|Drama,0
+Good Will Hunting,1997,Drama|Romance,0
+A Beautiful Mind,2001,Biography|Drama,0
+Rocky,1976,Drama|Sport,0
+Creed,2015,Drama|Sport,0
+Trainspotting,1996,Drama,0
+No Country for Old Men,2007,Crime|Drama|Thriller,0
+Fargo,1996,Crime|Thriller,0
+There Will Be Blood,2007,Drama,0
+Lost,2004,Adventure|Drama|Fantasy,0
+Prison Break,2005,Action|Crime|Drama,0
+Dexter,2006,Crime|Drama|Mystery,0
+House,2004,Drama|Mystery,0
+The Walking Dead,2010,Drama|Horror|Thriller,0
+Supernatural,2005,Drama|Fantasy|Horror,0
+Grey's Anatomy,2005,Drama|Romance,0
+Sons of Anarchy,2008,Crime|Drama|Thriller,0
+Vikings,2013,Action|Adventure|Drama,0
+Mad Men,2007,Drama,0
+The Wire,2002,Crime|Drama|Thriller,0
+Band of Brothers,2001,Drama|History|War,0
+The Last Dance,2020,Documentary|Biography|History,0
+Planet Earth II,2016,Documentary,0
+Making a Murderer,2015,Documentary|Crime,0
+The Big Bang Theory,2007,Comedy|Romance,0
+How I Met Your Mother,2005,Comedy|Romance,0
+Modern Family,2009,Comedy|Drama|Romance,0
+Brooklyn Nine-Nine,2013,Comedy|Crime,0
+Parks and Recreation,2009,Comedy,0
+Community,2009,Comedy,0
+Avatar: The Way of Water,2022,Action|Adventure|Fantasy,0
+The Martian,2015,Adventure|Drama|Sci-Fi,0
+Edge of Tomorrow,2014,Action|Adventure|Sci-Fi,0
+Logan,2017,Action|Drama|Sci-Fi,0
+Deadpool,2016,Action|Adventure|Comedy,0
